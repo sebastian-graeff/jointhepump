@@ -1,0 +1,30 @@
+ul {list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;}
+li {float: left;}
+li a {display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;}
+li a:hover {background-color: #111;}
+
+.web_back{color:black;background-color:#f1f1f1;}
+.navbar {font-family: "Barlow";
+         font-size: 20px;
+         font-weight: 100;
+         justify-content: center;}
+.socials {float:right;
+         width:auto;
+         border:none;
+         display:block;
+         outline:0;
+         justify-content: center;}
+.jointhepumps {font-family: "Barlow";
+                font-size: 30px;
+                font-weight: 300;
+                justify-content: center;
+                text-align: center;}
+
