@@ -70,313 +70,94 @@
                     center: [34.239,-0.010],
                     zoom: 10
                 });
+                // IMPORTANT! Change path directory and location of csv file
+                const csvUrl = 'https://raw.githubusercontent.com/sebastian-graeff/jointhepump/main/WebsiteMapLocations2.csv';
+                fetch(csvUrl)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Parse the CSV data
+                        const rows = data.trim().split('\n').slice(1);
+                        const features = rows.map(row => {
+                            const [id, type, name, link, description, icon, longitude, latitude] = row.split(';');
+                            return {
+                                type: 'Feature',
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                                },
+                                properties: {
+                                    type: type,
+                                    description: description,
+                                    icon: icon
+                                }
+                            };
+                        });
+                        const geojson = {
+                            type: 'FeatureCollection',
+                            features: features
+                        };
+                        
+                        // Add the GeoJSON data as a source to the map
+                        map.on('load', () => {
+                            map.addSource('markers', {
+                                type: 'geojson',
+                                data: geojson
+                            });
+            
+                            // Add a layer using the GeoJSON data source
+                            map.addLayer({
+                                'id': 'markers',
+                                'type': 'symbol',
+                                'source': 'markers',
+                                'layout': {
+                                    'icon-image': ['get', 'icon'],
+                                    'icon-allow-overlap': true,
+                                    'icon-size':  [
+                                        'interpolate',
+                                        // Set the exponential rate of change to 1.5
+                                        ['exponential', 1.5],
+                                        ['zoom'],
+                                        // When zoom is 10, icon will be 50% size.
+                                        10,
+                                        0.5,
+                                        // When zoom is 22, icon will be 10% size.
+                                        22,
+                                        0.1
+                                    ],
+                                }
+                            });
+                        });
+                        // When a click event occurs on a feature in the places layer, open a popup at the
+                        // location of the feature, with description HTML from its properties.
+                        map.on('click', 'markers', (e) => {
+                            // Copy coordinates array.
+                            const coordinates = e.features[0].geometry.coordinates.slice();
+                            const description = e.features[0].properties.description;
 
-                map.on('load', () => {
-                    map.addSource('places', {
-                        // This GeoJSON contains features that include an "icon"
-                        // property. The value of the "icon" property corresponds
-                        // to an image in the Mapbox Streets style's sprite.
-                        'type': 'geojson',
-                        'data': {
-                            'type': 'FeatureCollection',
-                            'features': [
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                            '<strong>Angasa B Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.276111, 0.096667]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Equator Special School Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-04'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.313767, 0.126172]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Kamlag Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.340278, 0.097222]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Kongongo Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-04'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.196000, 0.186990]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Kowet Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.347955, 0.139064]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Kuwuo Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-04'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.408056, 0.037778]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Lowle Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.410278, 0.147778]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Ndori Water Point Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.365278, 0.078611]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Nina Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.345449, 0.086107]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Nyadheho Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.178889, 0.188889]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Nyakongo Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.305122, 0.076083]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Nyalula Primary School Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.195278, 0.025556]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Salala Water Point Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.220833, 0.211944]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Sikinga Kondiek Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.169444, 0.173611]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Skange Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.314444, 0.139167]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Udamayi Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.088889, 0.074722]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Uhuak Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.269722, 0.114444]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Ulafu Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.317500, 0.071111]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Umaje Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-02'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.314399, 0.126167]
-                                    }
-                                },
-                                {
-                                    'type': 'Feature',
-                                    'properties': {
-                                        'description':
-                                        '<strong>Umuhula Pump</strong><p><a href="siaya.html" target="_blank" title="Opens in a new window">Learn more about pumps in Siaya County</a></p>',
-                                        'icon': 'PumpSVG-03'
-                                    },
-                                    'geometry': {
-                                        'type': 'Point',
-                                        'coordinates': [34.202778, 0.231389]
-                                    }
-                                },
-                            ]
-                        }
+                            // Ensure that if the map is zoomed out such that multiple
+                            // copies of the feature are visible, the popup appears
+                            // over the copy being pointed to.
+                            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                            }
+
+                            new mapboxgl.Popup()
+                                .setLngLat(coordinates)
+                                .setHTML(description)
+                                .addTo(map);
+                        });
+
+                        // Change the cursor to a pointer when the mouse is over the places layer.
+                        map.on('mouseenter', 'places', () => {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+
+                        // Change it back to a pointer when it leaves.
+                        map.on('mouseleave', 'places', () => {
+                            map.getCanvas().style.cursor = '';
+                        });        
                     });
-                    // Add a layer showing the places.
-                    map.addLayer({
-                        'id': 'places',
-                        'type': 'symbol',
-                        'source': 'places',
-                        'layout': {
-                            'icon-image': ['get', 'icon'],
-                            'icon-allow-overlap': true,
-                            'icon-size':  [
-                                'interpolate',
-                                // Set the exponential rate of change to 1.5
-                                ['exponential', 1.5],
-                                ['zoom'],
-                                // When zoom is 10, icon will be 50% size.
-                                10,
-                                0.5,
-                                // When zoom is 22, icon will be 10% size.
-                                22,
-                                0.1
-                            ],
-                        }
-                    });
-
-                    // When a click event occurs on a feature in the places layer, open a popup at the
-                    // location of the feature, with description HTML from its properties.
-                    map.on('click', 'places', (e) => {
-                        // Copy coordinates array.
-                        const coordinates = e.features[0].geometry.coordinates.slice();
-                        const description = e.features[0].properties.description;
-
-                        // Ensure that if the map is zoomed out such that multiple
-                        // copies of the feature are visible, the popup appears
-                        // over the copy being pointed to.
-                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                        }
-
-                        new mapboxgl.Popup()
-                            .setLngLat(coordinates)
-                            .setHTML(description)
-                            .addTo(map);
-                    });
-
-                    // Change the cursor to a pointer when the mouse is over the places layer.
-                    map.on('mouseenter', 'places', () => {
-                        map.getCanvas().style.cursor = 'pointer';
-                    });
-
-                    // Change it back to a pointer when it leaves.
-                    map.on('mouseleave', 'places', () => {
-                        map.getCanvas().style.cursor = '';
-                    });
-                });
-            </script>
+            </script>            
         </div>
     </body>
 </html>
