@@ -13,6 +13,37 @@
         body { margin: 0; padding: 0; }
         body {font-family: 'Barlow';font-size: 22px;font-weight: 200}
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+		/* Define the styles for the icons */
+		.icon {
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			margin-right: 5px;
+			vertical-align: middle;
+			background-repeat: no-repeat;
+			background-size: contain;
+		}
+
+		.legend {
+			margin-top: 10px;
+			padding: 10px;
+			font-size: 14px;
+			color: #555;
+			border: 1px solid #ddd;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			position: absolute;
+		}
+
+		/* Define the styles for the legend text */
+		.legend-text {
+			display: flex;
+			align-items: center;
+			margin-bottom: 5px;
+		}
+
         </style>
     </head>
     <body class="web_background">
@@ -40,25 +71,33 @@
             <div id="map">
             </div>
             <div class="legend-box">
+                <!-- Create the legend box -->
                 <div class="legend">
-                    <H3>Legend</H3>
-                    <div class="row">
-                        <div class="column">
-                            <h5 class="legend-left"></h5>
-                        </div>
-                        <div class="column">
-                            <img src="jointhepic/Legend1.svg" alt="Large Sponsorship Needed" style="width: 100%;">
-                        </div>
-                        <div class="column">
-                            <img src="jointhepic/Legend2.svg" alt="Middle Sponsorship Needed" style="width: 100%;">
-                        </div>
-                        <div class="column">
-                            <img src="jointhepic/Legend3.svg" alt="Small Sponsorship Needed" style="width: 100%;">
-                        </div>
-                        <div class="column">
-                            <h5 class="legend-right"></h5>^
-                        </div>
-                      </div>
+
+                    <!-- Create the heading for the legend -->
+                    <div class="legend-text">
+                        <h3>Pump status:</h3>
+                    </div>
+
+                    <!-- Create the icon and text for each legend item -->
+                    <div class="legend-text">
+                        <span class="icon" style="background-image: url('jointhepic/Legend10.svg')"></span>
+                        <span class="legend-label">Maintained</span>
+                    </div>
+
+                    <div class="legend-text">
+                        <span class="icon" style="background-image: url('jointhepic/Legend9.svg')"></span>
+                        <span class="legend-label">Maintenance needed</span>
+                    </div>
+
+                    <div class="legend-text">
+                        <span class="icon" style="background-image: url('jointhepic/Legend8.svg')"></span>
+                        <span class="legend-label">Urgent maintenance needed</span>
+                    </div>
+                    <div class="legend-text">
+                        <span class="icon" style="background-image: url('jointhepic/Legend7.svg')"></span>
+                        <span class="legend-label">Ghost pump</span>
+                    </div>
                 </div>
             </div>
             <script>
